@@ -19,6 +19,7 @@
   "homepage": "https://github.com/au-ql/CORD-web-messenger#readme",
   "dependencies": {
     "body-parser": "^1.20.2",
+    "dotenv": "^16.0.3",
     "ejs": "^3.1.8",
     "eslint": "^8.35.0",
     "eslint-config-airbnb-base": "^15.0.0",
