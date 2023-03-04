@@ -1,7 +1,7 @@
 const express = require("express");
 const fs = require("fs");
 const bodyParser = require("body-parser");
-var User = require("/home/qodeleaf/Desktop/cord/db.js");
+var User = require("../db.js");
 const path = require("path");
 var bcrypt = require("bcrypt");
 
