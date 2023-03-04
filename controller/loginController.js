@@ -3,7 +3,7 @@ const fs = require("fs");
 const path = require("path");
 const bodyParser = require("body-parser");
 const bcrypt = require("bcrypt");
-var User = require("/home/qodeleaf/Desktop/cord/db.js");
+var User = require("../db");
 
 const app = express();
 app.use(bodyParser.json());
