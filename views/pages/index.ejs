@@ -103,6 +103,9 @@
         left: 20%;
         display: flex;
       }
+      #messages { list-style-type: none; margin: 0; padding: 0; }
+      #messages > li { padding: 0.5rem 1rem; }
+      #messages > li:nth-child(odd) { background: #efefef; }
     </style>
   </head>
   <body>
@@ -111,10 +114,6 @@
         <a href="" class="logo">USERS</a><br /><br /><br /><br />
         <div class="allusers">
           <ul id="list">
-            <% for(let i = 0; i < data.length; i++) {%>
-            <li class="user"><%= data[i].Name%></li>
-            <br />
-            <% }%>
           </ul>
         </div>
       </div>
@@ -143,5 +142,42 @@
       <ul id="messages"></ul>
     </div>
     <script src="/socket.io/socket.io.js"></script>
+    <script>
+      const socket = io();
+      const messages = document.getElementById('messages');
+      const usernameInput = document.getElementById('username');
+      const setUsernameButton = document.getElementById('setUsername');
+      const recipientUsernameInput = document.getElementById('recipientUsername');
+      const messageInput = document.getElementById('message');
+      const sendButton = document.getElementById('send');
+      const activeUsers = document.getElementById('activeUsers');
+      setUsernameButton.addEventListener('click', () => {
+        socket.emit('set username', usernameInput.value);
+      });
+      sendButton.addEventListener('click', () => {
+        socket.emit('private message', messageInput.value, recipientUsernameInput.value);
+        messageInput.value = '';
+      });
+      socket.on('private message', (msg) => {
+        const li = document.createElement('li');
+        li.textContent = msg;
+        messages.appendChild(li);
+      });
+      socket.on('active users', (users) => {
+        activeUsers.innerHTML = '';
+        users.forEach((user) => {
+          const li = document.createElement('li');
+          li.textContent = user;
+          activeUsers.appendChild(li);
+        });
+      });
+      socket.on('request username', () => {
+        const username = prompt('Enter your username:');
+        socket.emit('set username', username);
+      });
+      socket.on('error', (errorMsg) => {
+        alert(errorMsg);
+      });
+    </script>
   </body>
 </html>
