@@ -3,7 +3,7 @@ const fs = require("fs");
 const path = require("path");
 const bodyParser = require("body-parser");
 const bcrypt = require("bcrypt");
-var User = require("/home/qodeleaf/Desktop/cord/db.js");
+var User = require("../db.js");
 
 const app = express();
 app.use(bodyParser.json());
@@ -26,6 +26,7 @@ module.exports = {
       );
       if (password_valid) {
         const users = await User.findAll();
+
         res.render("pages/index", { data: users });
       } else {
         res.status(400).json({ error: "Password Incorrect" });

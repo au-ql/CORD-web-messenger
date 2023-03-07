@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Private Chat</title>
+    <!-- <link rel="stylesheet" href="chat.css"> -->
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        background-color: rgb(118, 183, 118);
+      }
+      #socketid{
+        
+      }
+    </style>
+  </head>
+  <body>
+    <div id="socketid">
+      <label for="recipientSocketId">Recipient Socket ID:</label>
+      <input type="text" id="recipientSocketId" /><br />
+    </div>
+    <div id="msg">
+      <label for="message">Message:</label>
+      <input type="text" id="message" />
+      <button id="send">Send</button>
+    </div>
+    <ul id="messages"></ul>
+    <ul id="activeUsers"></ul>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      const socket = io();
+      const messages = document.getElementById("messages");
+      const recipientSocketId = document.getElementById("recipientSocketId");
+      const message = document.getElementById("message");
+      const send = document.getElementById("send");
+      const activeUsers = document.getElementById("activeUsers");
+      send.addEventListener("click", () => {
+        socket.emit("private message", message.value, recipientSocketId.value);
+        message.value = "";
+      });
+      socket.on("private message", (msg) => {
+        const li = document.createElement("li");
+        li.textContent = msg;
+        messages.appendChild(li);
+      });
+      socket.on("active users", (users) => {
+        activeUsers.innerHTML = "";
+        users.forEach((user) => {
+          const li = document.createElement("li");
+          li.textContent = user;
+          activeUsers.appendChild(li);
+        });
+      });
+    </script>
+  </body>
+</html>
