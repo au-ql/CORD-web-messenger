@@ -1,4 +1,4 @@
-var flash = require('connect-flash');
+const flash = require('connect-flash');
 const express = require('express');
 
 const app = express();
@@ -15,7 +15,6 @@ const sessions = require('express-session');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.set('view engine', 'ejs');
-
 
 const FiveDay = 1000 * 60 * 60 * 24 * 5;
 let session;
@@ -47,7 +46,7 @@ app.use('/logout', logout);
 app.get('/', (req, res) => {
   req.flash('message', 'Welcome to Blog');
   res.redirect('/login');
-})
+});
 
 const PORT = process.env.PORT || 3000;
 http.listen(PORT, console.log(`server listening on port ${PORT}`));
@@ -64,13 +63,13 @@ io.on('connection', (socket) => {
 
     io.emit('active users', Object.values(activeUsers));
 
-    socket.on('private message', (msg, recipientUsername) => {
+    socket.on('private message', (msg, recipientUsername, senderusername) => {
       const recipientSocketId = Object.keys(activeUsers).find(
         (socketId) => activeUsers[socketId] === recipientUsername,
       );
 
       if (recipientSocketId) {
-        socket.to(recipientSocketId).emit('private message', msg);
+        socket.to(recipientSocketId).emit('private message', msg, senderusername);
       } else {
         socket.emit('error', `User "${recipientUsername}" not found`);
       }
