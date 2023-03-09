@@ -54,11 +54,11 @@
         padding: 5px;
       }
       nav ul li:hover {
-        background-color: crimson;
+        background-color: rgb(73, 220, 20);
       }
       .container {
         line-height: 1.6;
-        width: 100%;
+        width: auto;
         margin: 0 auto 0 170px;
         padding: 70px;
       }
@@ -94,8 +94,9 @@
         }
       }
       input#message {
-        width: 300px;
-        padding: 10px 200px;
+        width: 900px;
+        padding: 2px 2px;
+        height: 35px;
       }
       #msg {
         position: fixed;
@@ -137,19 +138,15 @@
         background-color: #1e6169;
         border: none;
         border-radius: 15px;
-        box-shadow: 0 9px #999;
+        box-shadow: 0 1px #999;
       }
     </style>
   </head>
   <body>
     <script type="text/javascript" src="./libsignal-protocol.js"></script>
-    ;
     <nav class="sidebar">
       <div class="header">
-        <a href="" class="logo"><%= name%></a><br /><br /><br /><br />
-        <div class="allusers">
-          <ul id="list"></ul>
-        </div>
+        <a href="" id="logo"><%= name%></a><br /><br />
       </div>
       <ul id="activeUsers"></ul>
       <form method="post" action="/logout">
@@ -158,15 +155,6 @@
     </nav>
     <button class="toggle">☰</button>
     <div class="container">
-      <div>
-        <label for="username">Username:</label>
-        <input type="text" id="username" />
-        <button id="setUsername">Set Username</button>
-      </div>
-      <div>
-        <label for="recipientUsername">Recipient:</label>
-        <input type="text" id="recipientUsername" />
-      </div>
       <div id="msg">
         <input
           type="text"
@@ -181,41 +169,48 @@
     <script src="/socket.io/socket.io.js"></script>
     <script>
       const socket = io();
-      const messages = document.getElementById("messages");
-      const usernameInput = document.getElementById("username");
-      const setUsernameButton = document.getElementById("setUsername");
-      const recipientUsernameInput =
-        document.getElementById("recipientUsername");
-      const messageInput = document.getElementById("message");
-      const sendButton = document.getElementById("send");
-      const activeUsers = document.getElementById("activeUsers");
-      setUsernameButton.addEventListener("click", () => {
-        socket.emit("set username", usernameInput.value);
-      });
-      sendButton.addEventListener("click", () => {
-        socket.emit(
-          "private message",
-          messageInput.value,
-          recipientUsernameInput.value
-        );
-        messageInput.value = "";
+      const messages = document.getElementById('messages');
+      const usernameInput = document.getElementById('username');
+      let recipientUsernameInput = '';
+      const messageInput = document.getElementById('message');
+      const sendButton = document.getElementById('send');
+      const activeUsers = document.getElementById('activeUsers');
+      const usernameofsession = sessionStorage.getItem('usernameofsession');
+
+      console.log(usernameofsession);
+    
+      activeUsers.addEventListener('click', () =>{
+        recipientUsernameInput = document.getElementById("x").innerHTML;
+        console.log(recipientUsernameInput);
+      })
+
+      sendButton.addEventListener('click', function(e) {
+      e.preventDefault();
+        if(messageInput.value){
+          const li = document.createElement('li');
+          li.textContent = messageInput.value;
+          messages.appendChild(li);
+          socket.emit('private message', messageInput.value, recipientUsernameInput);
+          messageInput.value = '';
+        }
       });
       socket.on("private message", (msg) => {
         const li = document.createElement("li");
         li.textContent = msg;
         messages.appendChild(li);
+        window.scrollTo(0, document.body.scrollHeight);
       });
       socket.on("active users", (users) => {
         activeUsers.innerHTML = "";
         users.forEach((user) => {
-          const li = document.createElement("li");
+          const li = document.createElement('li');
+          li.setAttribute('id','x');
           li.textContent = user;
           activeUsers.appendChild(li);
         });
       });
       socket.on("request username", () => {
-        const username = prompt("Enter your username:");
-        socket.emit("set username", username);
+        socket.emit("set username", usernameofsession);
       });
       socket.on("error", (errorMsg) => {
         alert(errorMsg);
