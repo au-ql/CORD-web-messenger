@@ -1,13 +1,13 @@
-const { Sequelize, DataTypes, Model } = require('sequelize');
+const { Sequelize, DataTypes, Model } = require("sequelize");
 
-const sequelize = new Sequelize('postgres://postgres:Harsh@123@localhost:5432/postgres');
+const sequelize = new Sequelize("postgres://postgres:test@localhost:5432/Cord");
 
 async function auth() {
   try {
     await sequelize.authenticate();
-    console.log('Connection has been established successfully.');
+    console.log("Connection has been established successfully.");
   } catch (error) {
-    console.error('Unable to connect to the database:', error);
+    console.error("Unable to connect to the database:", error);
   }
 }
 auth();
@@ -36,12 +36,12 @@ User.init(
   },
   {
     sequelize,
-    modelName: 'User',
+    modelName: "User",
     timestamps: true,
-  },
+  }
 );
 
 sequelize.sync({ alter: true });
-console.log('The table for the User model was just (re)created!');
+console.log("The table for the User model was just (re)created!");
 
 module.exports = User;

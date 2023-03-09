@@ -37,7 +37,6 @@ module.exports = {
           return hash;
         });
       });
-      // res.send("Hurray!!! Registered Successfully");
       res.redirect('/login');
     } else {
       res.send('User Already Registered');

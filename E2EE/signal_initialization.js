@@ -1,4 +1,3 @@
-<script type="text/javascript" src="./libsignal-protocol.js"></script>; // TO BE INCLUDED IN HTML FILE
 
 //Initialize the manager when user logs on
 
