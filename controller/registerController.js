@@ -1,17 +1,19 @@
-const express = require('express');
-const fs = require('fs');
-const bodyParser = require('body-parser');
-const path = require('path');
-const bcrypt = require('bcrypt');
-const User = require('../db.js');
+const express = require("express");
+const fs = require("fs");
+const bodyParser = require("body-parser");
+const path = require("path");
+const bcrypt = require("bcrypt");
+const User = require("../db.js");
+var flash = require('connect-flash');
 
 const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
+app.use(flash());
 module.exports = {
   get: (req, res) => {
-    res.sendFile(path.join(path.resolve(), 'views', 'pages', 'register.html'));
+    req.flash("info", "Flash Message Added");
+    res.sendFile(path.join(path.resolve(), "views", "pages", "register.html"));
   },
 
   post: async (req, res) => {
@@ -22,7 +24,7 @@ module.exports = {
     };
 
     const already_user = await User.findOne({
-      where: { Email: req.body.email },
+      where: { Name: req.body.name },
     });
     if (!already_user) {
       const saltRounds = 10;
@@ -37,9 +39,11 @@ module.exports = {
           return hash;
         });
       });
-      res.redirect('/login');
+      await req.flash("message", "Register Successful");
+      res.status(202).redirect("/login");
+
     } else {
-      res.send('User Already Registered');
+      res.status(209).send("User Already exists");
     }
   },
 };

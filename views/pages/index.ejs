@@ -7,25 +7,29 @@
       *:before *:after {
         box-sizing: border-box;
       }
+      body {
+        background-color: #1c7d5a;
+      }
       .sidebar {
         position: fixed;
         top: 0;
         left: 0;
         width: 200px;
         height: 100vh;
-        background: #1c7d5a;
+        background: white;
       }
       .header {
-        color: rgb(202, 218, 159);
+        color: rgb(31, 57, 5);
         text-align: center;
         padding: 15px;
       }
-      .logo {
+      #logo {
         height: 100px;
-        font-size: 24px;
+        font-size: 30px;
         line-height: 24px;
         padding: 15px;
         margin-bottom: 50px;
+        color: #1c7d5a;
       }
       .toggle {
         position: fixed;
@@ -46,14 +50,21 @@
         list-style: none;
         margin: 0;
         padding: 0;
-        color: white;
+        color: black;
         text-align: center;
         transition: max-height 0.5s;
       }
       nav ul li {
         padding: 5px;
+        cursor: pointer;
       }
       nav ul li:hover {
+        background-color: rgb(73, 220, 20);
+      }
+      nav ul li a:focus {
+        background-color: rgb(73, 220, 20);
+      }
+      nav ul li a:active {
         background-color: rgb(73, 220, 20);
       }
       .container {
@@ -71,6 +82,8 @@
         }
         .header {
           float: none;
+          background-color: black;
+          font-size: 24px;
         }
         nav ul {
           background: rgb(139, 172, 86);
@@ -113,7 +126,11 @@
         padding: 0.5rem 1rem;
       }
       #messages > li:nth-child(odd) {
-        background: #efefef;
+        background: #7ee075;
+      }
+
+      #messages > li:nth-child(even) {
+        background: #bbe496;
       }
       #logout {
         position: fixed;
@@ -124,7 +141,6 @@
         width: 100px;
         background-color: rgb(15, 94, 114);
         transition: width 0.35s;
-        /* -webkit-transition: width 0.35s; */
         font-size: 20px;
         border-radius: 15px;
         display: inline-block;
@@ -140,14 +156,19 @@
         border-radius: 15px;
         box-shadow: 0 1px #999;
       }
+      img {
+        height: 8%;
+        position: fixed;
+        top: 0%;
+        left: 0%;
+      }
     </style>
+
+    <link rel="icon" type="image/x-icon" href="../../static/favicon.ico" />
   </head>
   <body>
-    <script type="text/javascript" src="./libsignal-protocol.js"></script>
     <nav class="sidebar">
-      <div class="header">
-        <a href="" id="logo"><%= name%></a><br /><br />
-      </div>
+      <div class="header"><a href="" id="logo"><%= name%></a><br /><br /></div>
       <ul id="activeUsers"></ul>
       <form method="post" action="/logout">
         <button type="submit" id="logout">logout</button>
@@ -155,6 +176,9 @@
     </nav>
     <button class="toggle">☰</button>
     <div class="container">
+      <div id="img">
+        <img src="../../static/favicon.png" />
+      </div>
       <div id="msg">
         <input
           type="text"
@@ -169,29 +193,33 @@
     <script src="/socket.io/socket.io.js"></script>
     <script>
       const socket = io();
-      const messages = document.getElementById('messages');
-      const usernameInput = document.getElementById('username');
-      let recipientUsernameInput = '';
-      const messageInput = document.getElementById('message');
-      const sendButton = document.getElementById('send');
-      const activeUsers = document.getElementById('activeUsers');
-      const usernameofsession = sessionStorage.getItem('usernameofsession');
+      const messages = document.getElementById("messages");
+      const usernameInput = document.getElementById("username");
+      let recipientUsernameInput = "";
+      const messageInput = document.getElementById("message");
+      const sendButton = document.getElementById("send");
+      const activeUsers = document.getElementById("activeUsers");
+      const usernameofsession = sessionStorage.getItem("usernameofsession");
 
       console.log(usernameofsession);
-    
-      activeUsers.addEventListener('click', () =>{
+
+      activeUsers.addEventListener("click", () => {
         recipientUsernameInput = document.getElementById("x").innerHTML;
         console.log(recipientUsernameInput);
-      })
+      });
 
-      sendButton.addEventListener('click', function(e) {
-      e.preventDefault();
-        if(messageInput.value){
-          const li = document.createElement('li');
+      sendButton.addEventListener("click", function (e) {
+        e.preventDefault();
+        if (messageInput.value) {
+          const li = document.createElement("li");
           li.textContent = messageInput.value;
           messages.appendChild(li);
-          socket.emit('private message', messageInput.value, recipientUsernameInput);
-          messageInput.value = '';
+          socket.emit(
+            "private message",
+            messageInput.value,
+            recipientUsernameInput
+          );
+          messageInput.value = "";
         }
       });
       socket.on("private message", (msg) => {
@@ -203,8 +231,8 @@
       socket.on("active users", (users) => {
         activeUsers.innerHTML = "";
         users.forEach((user) => {
-          const li = document.createElement('li');
-          li.setAttribute('id','x');
+          const li = document.createElement("li");
+          li.setAttribute("id", "x");
           li.textContent = user;
           activeUsers.appendChild(li);
         });

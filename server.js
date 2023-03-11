@@ -1,3 +1,4 @@
+var flash = require('connect-flash');
 const express = require('express');
 
 const app = express();
@@ -15,6 +16,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.set('view engine', 'ejs');
 
+
 const FiveDay = 1000 * 60 * 60 * 24 * 5;
 let session;
 
@@ -27,12 +29,12 @@ app.use(
     resave: false,
   }),
 );
+
 app.use(cookieParser());
+app.use(flash());
 
 dotenv.config();
 
-// const chatRoutes = require('./routes/chatRoutes');
-// const messageRoutes = require('./routes/messageRoutes');
 const login = require('./routes/login');
 const register = require('./routes/register');
 const logout = require('./routes/logout');
@@ -42,12 +44,13 @@ app.use('/static', express.static(path.join(__dirname, 'public')));
 app.use('/login', login);
 app.use('/register', register);
 app.use('/logout', logout);
+app.get('/', (req, res) => {
+  req.flash('message', 'Welcome to Blog');
+  res.redirect('/login');
+})
 
 const PORT = process.env.PORT || 3000;
 http.listen(PORT, console.log(`server listening on port ${PORT}`));
-// app.get('/', (req, res) => {
-//   res.sendFile(__dirname + '/index.html');
-// });
 
 const activeUsers = {};
 

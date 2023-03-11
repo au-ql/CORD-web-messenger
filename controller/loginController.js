@@ -15,6 +15,7 @@ module.exports = {
   get: async (req, res) => {
     session = req.session;
     if (session.userid) {
+      await req.flash("info", "Flash Message Added");
       res.render('pages/index', { name: session.userid });
     } else {
       res.sendFile(path.join(path.resolve(), 'views', 'pages', 'login.html'));
