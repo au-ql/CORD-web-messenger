@@ -1,6 +1,9 @@
 const express = require("express");
 const fs = require("fs");
 const bodyParser = require("body-parser");
+
+var User = require("../db.js");
+
 const path = require("path");
 const bcrypt = require("bcrypt");
 const User = require("../db.js");
